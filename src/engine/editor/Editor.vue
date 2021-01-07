@@ -1,12 +1,11 @@
 <script>
 import EditorCanvas from './Canvas.vue';
 import Node from './Node.vue';
+import Link from './Link.vue';
 import interact from 'interactjs';
 
-console.log(interact);
-
 export default {
-    components: { EditorCanvas, Node },
+    components: { EditorCanvas, Node, Link },
     data() {
         return {
             nodes: [],
@@ -34,6 +33,7 @@ export default {
                 id: 'node-' + this.nodes.length,
                 type: 'text',
                 position: { x: 20, y: 20 },
+                choices: [{ text: 'Choice 1' }, { text: 'Choice 2' }, { text: 'Choice 3' }],
             });
         },
         findNewNodePosition() {
@@ -62,7 +62,7 @@ export default {
             <div class="font-bold">Quest Editor</div>
             <button @click="addNode" class="py-1 px-2 bg-blue-800 text-white ml-5">Add node</button>
         </div>
-        <editor-canvas class="p-3 flex-auto">
+        <editor-canvas class="p-3 flex-auto flex">
             <node
                 :node="node"
                 v-for="node of nodes"

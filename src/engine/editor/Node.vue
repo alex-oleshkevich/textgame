@@ -12,7 +12,7 @@ export default {
     },
     data() {
         return {
-            choices: [{ text: 'Choice 1' }, { text: 'Choice 2' }, { text: 'Choice 3' }],
+            choices: [],
         };
     },
 };
@@ -31,7 +31,7 @@ export default {
                 Could this be made to also function on touch devices (detecting a swipe scroll attempt)?
             </div>
             <div>
-                <choice :node="node" v-for="choice of choices" :key="choice.text">
+                <choice :node="node" v-for="choice of node.choices" :key="choice.text">
                     {{ choice.text }}
                 </choice>
             </div>

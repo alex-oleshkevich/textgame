@@ -1,9 +1,15 @@
 <script>
-export default {};
+export default {
+    methods: {
+        onClicked(e) {
+            this.$emit('port-click');
+        },
+    },
+};
 </script>
 
 <template>
-    <div class="port">
+    <div class="port" @click.prevent.stop="onClicked">
         <div></div>
     </div>
 </template>

@@ -1,19 +1,110 @@
 <script>
-import TransformWrapper from './TransformWrapper.vue';
-import Transform from './Transform.vue';
+import interact from 'interactjs';
+const passiveSupported = false;
+
+function passiveOption(passive) {
+    return passiveSupported ? { passive } : passive;
+}
 
 export default {
-    components: { TransformWrapper, Transform },
+    data() {
+        return {
+            positionX: 0,
+            positionY: 0,
+            scale: 1,
+        };
+    },
+    mounted() {
+        const passive = passiveOption(false);
+        this.$el.addEventListener('wheel', this.handleMouseWheel, passive);
+        this.$el.addEventListener('dblclick', this.handleDoubleClick, passive);
+
+
+        // this.bindPanning();
+        // window.addEventListener('keydown', this.bindPanning, passive);
+        // window.addEventListener('keyup', this.unbindPanning, passive);
+    },
+    beforeUnmount() {
+        const passive = passiveOption(false);
+        this.$el.removeEventListener('wheel', this.handleMouseWheel, passive);
+        this.$el.removeEventListener('dblclick', this.handleDoubleClick, passive);
+
+        window.removeEventListener('keydown', this.bindPanning, passive);
+        window.removeEventListener('keyup', this.unbindPanning, passive);
+    },
+    computed: {
+        styles() {
+            return {
+                transform: `translate(${this.positionX}px, ${this.positionY}px) scale(${this.scale})`,
+            };
+        },
+    },
+    methods: {
+        bindPanning(e) {
+            // if (e.code !== 'Space') {
+            //     return;
+            // }
+            this.interact = interact(this.$el.querySelector('.fc-transform')).draggable({
+                inertia: true,
+                modifiers: [
+                    interact.modifiers.restrictRect({
+                        restriction: 'parent',
+                        endOnly: true,
+                    }),
+                ],
+                ignoreFrom: '.node',
+                allowFrom: '.fc-transform',
+                autoScroll: true,
+                listeners: {
+                    move: this.handleMove,
+                },
+            });
+        },
+        unbindPanning(e) {
+            if (e.code !== 'Space') {
+                return;
+            }
+            this.interact.unset();
+        },
+
+        handleMove(e) {
+            this.positionX += e.delta.x;
+            this.positionY += e.delta.y;
+        },
+
+        /**
+         * @param {WheelEvent} e
+         */
+        handleMouseWheel(e) {
+            if (this.isPanning) {
+                return;
+            }
+            if (e.wheelDeltaY > 0) {
+                this.scale += 0.05;
+            } else {
+                this.scale -= 0.05;
+            }
+        },
+
+        /**
+         * @param {MouseEvent} e
+         */
+        handleDoubleClick(e) {
+            this.scale = 1;
+        },
+    },
 };
 </script>
 
 <template>
     <div class="fc-canvas-outer">
-        <transform-wrapper v-slot="{ pan }" pan zoom>
-            <div class="fc-canvas-inner draggable" :class="pan ? 'pan' : ''">
-                <slot></slot>
+        <div class="fc-transform-wrapper" :style="styles">
+            <div class="fc-transform">
+                <div class="fc-canvas-inner">
+                    <slot></slot>
+                </div>
             </div>
-        </transform-wrapper>
+        </div>
     </div>
 </template>
 
@@ -41,5 +132,26 @@ export default {
     background-color: var(--fc-grid-background);
     background-image: linear-gradient(90deg, rgba(255, 255, 255, var(--fc-grid-transparency)) 1px, transparent 0px),
         linear-gradient(rgba(255, 255, 255, var(--fc-grid-transparency)) 1px, transparent 0px);
+}
+
+.fc-transform-wrapper {
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+    overflow: hidden;
+    user-select: none;
+    margin: 0;
+    padding: 0;
+    touch-action: none;
+}
+
+.fc-transform {
+    display: flex;
+    flex-wrap: wrap;
+    width: fit-content;
+    height: fit-content;
+    margin: 0;
+    padding: 0;
+    transform-origin: 0% 0%;
 }
 </style>
