@@ -1,5 +1,8 @@
 <script>
 export default {
+    props: {
+        portId: { type: String, required: true },
+    },
     methods: {
         onClicked(e) {
             this.$emit('port-click');
@@ -9,7 +12,7 @@ export default {
 </script>
 
 <template>
-    <div class="port" @click.prevent.stop="onClicked">
+    <div class="port" @click="onClicked" :data-port-id="portId" :title="portId">
         <div></div>
     </div>
 </template>
@@ -22,9 +25,7 @@ export default {
     background: white;
     cursor: pointer;
     display: flex;
-    -webkit-box-pack: center;
     justify-content: center;
-    -webkit-box-align: center;
     align-items: center;
 }
 

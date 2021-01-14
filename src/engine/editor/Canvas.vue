@@ -20,7 +20,7 @@ export default {
         this.$el.addEventListener('dblclick', this.handleDoubleClick, passive);
 
 
-        // this.bindPanning();
+        this.bindPanning();
         // window.addEventListener('keydown', this.bindPanning, passive);
         // window.addEventListener('keyup', this.unbindPanning, passive);
     },
@@ -100,7 +100,7 @@ export default {
     <div class="fc-canvas-outer">
         <div class="fc-transform-wrapper" :style="styles">
             <div class="fc-transform">
-                <div class="fc-canvas-inner">
+                <div class="fc-canvas-inner flex flex-auto">
                     <slot></slot>
                 </div>
             </div>

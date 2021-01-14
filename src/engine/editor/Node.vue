@@ -21,7 +21,7 @@ export default {
 <template>
     <div class="rounded shadow bg-gray-600 border border-gray-700 absolute node flex" :data-id="node.id">
         <div class="flex items-center -ml-5">
-            <port :node="node"></port>
+            <port :node="node" :port-id="node.id"></port>
         </div>
         <div>
             <div class="border-b border-gray-700 p-2 node-title">
@@ -31,7 +31,7 @@ export default {
                 Could this be made to also function on touch devices (detecting a swipe scroll attempt)?
             </div>
             <div>
-                <choice :node="node" v-for="choice of node.choices" :key="choice.text">
+                <choice :node="node" :choice="choice" v-for="choice of node.choices" :key="choice.text">
                     {{ choice.text }}
                 </choice>
             </div>
